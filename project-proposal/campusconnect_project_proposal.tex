@@ -1,0 +1,201 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Lab instructor name
+\makeatletter
+\newcommand{\BvrSetLabInstructor}[1]{\gdef\Bvr@LabInstructor{#1}}
+\newcommand{\Bvr@LabInstructor}{Nisha Thakur}
+\newcommand{\BvrLabInstructorValue}{\Bvr@LabInstructor}
+\makeatother
+
+% Title and subtitle formatting
+\usepackage{titling}
+\pretitle{\begin{center}\bfseries\fontsize{18bp}{18bp}\selectfont}
+\makeatletter
+\newcommand{\BvrSubtitle}[1]{%
+  \posttitle{\par\end{center}\begin{center}\large#1\end{center}\vskip 0.5em}}
+\makeatother
+\newcommand{\BvrHint}[1]{{\normalfont\normalsize\itshape\hfill #1}}
+
+\title{CampusConnect: Campus Placement Management Portal}
+\BvrSetLabInstructor{Nisha Thakur}
+\BvrSubtitle{%
+  Project Proposal for UCS503P \\
+  Submitted to: \BvrLabInstructorValue \\ \bfseries
+  Thapar Institute of Engineering and Technology}
+
+% Replace the name, roll number, and email below before submitting.
+\author{%
+  Mayank Garg, COPC\thanks{Roll No: 1024170442, Email: \texttt{mgarg7\_be24@thapar.edu}}\\
+  Paryag Bansal, COPC\thanks{Roll No: 1024170446, Email: \texttt{pbansal5\_be24@thapar.edu}}\\
+  Aashana, COPC\thanks{Roll No: 1024170427, Email: \texttt{abhandari\_be24@thapar.edu}}%
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Higher-order goal\BvrHint{\ldots secondary framing}}
+The goal of CampusConnect is to make the campus placement process easier for students and placement administrators. Students should be able to see suitable placement drives, complete their profile, and track their applications in one place. The main engineering goal is to build a working web application that makes placement information and application status easier to manage.
+
+\section{Time-to-value \BvrHint{\ldots primary heuristic}}
+\begin{itemize}[leftmargin=0.7cm]
+  \item We will first build the main student flow: register, log in, view placement drives, and check application status.
+  \item We will take feedback from a small group of students after each weekly update and make simple improvements quickly.
+  \item The first version will focus on useful screens and a working backend instead of adding too many features at once.
+\end{itemize}
+
+\section{Problem Statement}
+Students often get placement information from different sources such as emails, WhatsApp groups, notices, and messages from classmates. This can make it difficult to know which drives are open and whether they are eligible. Common problems are:
+\begin{itemize}[leftmargin=0.7cm]
+  \item \textbf{Scattered information:} drive details, deadlines, and updates are shared in many places.
+  \item \textbf{Unclear eligibility:} students may not know if their CGPA, course, graduation year, or backlogs meet a company's rules.
+  \item \textbf{No simple tracking:} students may not know the current status of their application after applying.
+  \item \textbf{Manual admin work:} placement administrators need to manage student details, applications, and documents separately.
+\end{itemize}
+
+\textbf{Why this matters now (contextual relevance):} A single portal can save time for students and reduce repeated work for the placement cell, especially when several companies open drives at the same time.
+
+\section{Proposed Solution \BvrHint{\ldots Software Proposition}}
+\subsection{Overview}
+Build a \textbf{web-based} campus placement portal called CampusConnect with the following parts:
+\begin{itemize}[leftmargin=0.7cm]
+  \item \textbf{Student account:} students can register using their Thapar email, log in, and maintain their profile.
+  \item \textbf{Placement drive view:} students can see available companies, job roles, packages, deadlines, locations, and eligibility.
+  \item \textbf{Application tracking:} students can apply for drives and view the status of their applications.
+  \item \textbf{Document and profile support:} students can add academic details, skills, projects, certificates, and resume information.
+  \item \textbf{Admin dashboard:} administrators can manage students, check documents, and review applications.
+\end{itemize}
+
+\subsection{Core workflow}
+\begin{enumerate}[leftmargin=0.7cm]
+  \item A student registers with a Thapar email address and logs in to CampusConnect.
+  \item The student completes profile details such as course, graduation year, CGPA, skills, and resume.
+  \item The student views placement drives and checks the basic eligibility information.
+  \item The student applies for a suitable drive and follows the application status from the dashboard.
+  \item The admin checks student details and documents, then manages applications and drive-related information.
+\end{enumerate}
+
+\subsection{Operational constraints for an educational, tier-2/3 setting}
+\begin{itemize}[leftmargin=0.7cm]
+  \item The portal should work well on laptops and phones through a responsive web interface.
+  \item The first version will use simple rules for eligibility and profile checks instead of complex algorithms.
+  \item The project will use commonly available web tools so it can be deployed and tested without costly infrastructure.
+\end{itemize}
+
+\section{Solution Approach \BvrHint{\ldots Engineering focus}}
+This is an engineering course project, so the focus is on making the placement workflow clear, usable, and reliable. The project does not try to create a new placement algorithm. It focuses on building the portal and connecting its student and admin functions properly.
+
+\subsection{Duplicate/quality assistance \BvrHint{\ldots non-research}}
+Profile and application quality checks will use simple rules:
+\begin{itemize}[leftmargin=0.7cm]
+  \item Check that important fields such as email, course, graduation year, and CGPA are present before an application is submitted.
+  \item Use the registered email as a unique student identifier to avoid duplicate accounts.
+  \item Show missing profile fields to the student before they apply, instead of automatically rejecting their application.
+\end{itemize}
+
+\subsection{Web architecture \BvrHint{\ldots web-based solution}}
+A simple three-layer web architecture will be used:
+\begin{itemize}[leftmargin=0.7cm]
+  \item \textbf{Frontend:} React and Vite will provide the student login, student dashboard, and admin pages.
+  \item \textbf{Backend API:} Node.js and Express will handle registration, login, user data, and future placement APIs.
+  \item \textbf{Database:} MongoDB with Mongoose will store user accounts, academic details, skills, projects, resumes, and role information.
+\end{itemize}
+
+\subsection{CI/CD and fast delivery enabler}
+CI/CD will be used to:
+\begin{itemize}[leftmargin=0.7cm]
+  \item Build the React frontend and check the code on every important change.
+  \item Run basic backend tests for registration, login, and validation rules.
+  \item Make it easier to deploy a tested version to a staging environment.
+\end{itemize}
+
+\section{Evaluation Criterion \BvrHint{\ldots measurable and attributable}}
+The project will be checked using simple measures linked to the main student workflow.
+
+\subsection{Primary evaluation metric}
+\textbf{Application completion time (ACT):} the time a student needs to log in, complete the required profile fields, find a suitable drive, and submit an application.
+\begin{itemize}[leftmargin=0.7cm]
+  \item Target: most pilot users should be able to complete this flow in 5 minutes or less when their details are ready.
+  \item Attribution: measure the time from login to the application confirmation screen during a small user test.
+\end{itemize}
+
+\subsection{Secondary evaluation metrics}
+\begin{itemize}[leftmargin=0.7cm]
+  \item \textbf{Profile completion rate:} percentage of pilot students who complete the required profile fields.
+  \item \textbf{Application clarity:} percentage of pilot students who can correctly identify their application status.
+  \item \textbf{Admin task time:} time needed to find a student record or review an application in the admin dashboard.
+  \item \textbf{Reliability:} successful registration and login attempts during the pilot period.
+\end{itemize}
+
+\subsection{Pilot validation plan \BvrHint{\ldots high-level}}
+\begin{itemize}[leftmargin=0.7cm]
+  \item Ask 10--15 students to register, complete a profile, and use a sample placement drive.
+  \item Ask 2--3 users to try the admin pages with sample student and application data.
+  \item Collect short feedback about ease of use, missing information, and confusing steps.
+\end{itemize}
+
+\section{Scalability \BvrHint{\ldots with foresight}}
+The portal should be able to grow from a small student test to wider use in the institute.
+\begin{enumerate}[leftmargin=0.7cm]
+  \item \textbf{Scalable (theoretically):} The system can support more students, drives, and applications by:
+  \begin{itemize}[leftmargin=0.7cm]
+    \item keeping the frontend and backend separate,
+    \item adding pagination and database indexes for student and application lists,
+    \item keeping API routes independent of the user interface.
+  \end{itemize}
+  \item \textbf{Operationally deployable (practically):} The system can run on normal web hosting using:
+  \begin{itemize}[leftmargin=0.7cm]
+    \item a managed MongoDB database,
+    \item a platform-hosted frontend and backend,
+    \item a simple CI/CD workflow for staging and production updates.
+  \end{itemize}
+\end{enumerate}
+
+\section{Engine availability heuristic}
+The project can be built with mature tools that are already widely used for web applications:
+\begin{itemize}[leftmargin=0.7cm]
+  \item React and Vite for the frontend interface.
+  \item Node.js and Express for REST APIs.
+  \item MongoDB and Mongoose for storing data.
+  \item bcrypt for password hashing and JSON Web Tokens for authentication.
+  \item GitHub Actions or a similar CI tool for build and test checks.
+  \item A cloud platform such as Render or Vercel for deployment.
+\end{itemize}
+Using these tools lets us focus on the placement workflow and user experience instead of building basic infrastructure from scratch.
+
+\section{Project scope and deliverables \BvrHint{\ldots iteration-friendly}}
+\subsection{Initial deliverable \BvrHint{\ldots first iteration}}
+\begin{itemize}[leftmargin=0.7cm]
+  \item Student registration and login with Thapar email validation.
+  \item Student profile with academic details, skills, projects, certificates, and resume fields.
+  \item Student dashboard showing profile completion, eligible drives, and applications.
+  \item Admin pages for student management, document verification, and applications.
+  \item Basic backend APIs for user registration and login.
+  \item Build, lint, and basic test setup for the project.
+\end{itemize}
+
+\subsection{Subsequent deliverables}
+\begin{itemize}[leftmargin=0.7cm]
+  \item Create and manage placement drives from the admin dashboard.
+  \item Add application submission and application-status updates.
+  \item Add rule-based eligibility checks using student profile data.
+  \item Add search, filters, and notifications for drives and applications.
+\end{itemize}
+
+\section{Risks and mitigations}
+\begin{itemize}[leftmargin=0.7cm]
+  \item \textbf{Student data privacy:} store only needed profile data, hash passwords, and limit admin access.
+  \item \textbf{Incomplete profiles:} clearly show which fields are missing before students apply.
+  \item \textbf{Wrong eligibility data:} keep eligibility rules visible and allow admins to review applications.
+  \item \textbf{Deployment issues:} use environment variables for secrets and test the project in staging before release.
+\end{itemize}
+
+\section{Summary}
+CampusConnect is a web portal for handling the basic campus placement process in one place. It will help students maintain their profile, view placement drives, and track applications. It will also help administrators manage student details, documents, and applications. The project uses a practical React, Node.js, Express, and MongoDB setup and will be developed in small working steps with feedback from students.
+
+\end{document}
