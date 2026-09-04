@@ -132,7 +132,7 @@ CampusConnect/
 ### Clone Repository
 
 ```bash
-git clone https://github.com/paryagbansal131/CampusConnect.git
+git clone https://github.com/paryagbansal131/UCS503.git
 cd CampusConnect
 ```
 
