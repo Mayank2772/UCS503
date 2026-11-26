@@ -54,8 +54,9 @@ const createDrive = async (req, res) => {
       });
     }
 
+    console.error("Create drive error:", error);
     res.status(500).json({
-      message: error.message,
+      message: "Unable to create placement drive",
     });
   }
 };
@@ -69,8 +70,9 @@ const getDrives = async (req, res) => {
 
     res.json(drives);
   } catch (error) {
+    console.error("Get drives error:", error);
     res.status(500).json({
-      message: error.message,
+      message: "Unable to load placement drives",
     });
   }
 };
@@ -87,8 +89,13 @@ const getDriveById = async (req, res) => {
 
     res.json(drive);
   } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(400).json({ message: "Invalid drive ID" });
+    }
+
+    console.error("Get drive error:", error);
     res.status(500).json({
-      message: error.message,
+      message: "Unable to load placement drive",
     });
   }
 };
@@ -111,8 +118,13 @@ const checkStudentEligibility = async (req, res) => {
 
     res.json(result);
   } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(400).json({ message: "Invalid drive ID" });
+    }
+
+    console.error("Check drive eligibility error:", error);
     res.status(500).json({
-      message: error.message,
+      message: "Unable to check drive eligibility",
     });
   }
 };
@@ -173,8 +185,9 @@ const updateDrive = async (req, res) => {
       });
     }
 
+    console.error("Update drive error:", error);
     res.status(500).json({
-      message: error.message,
+      message: "Unable to update placement drive",
     });
   }
 };
@@ -195,8 +208,13 @@ const deleteDrive = async (req, res) => {
       message: "Drive deleted",
     });
   } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(400).json({ message: "Invalid drive ID" });
+    }
+
+    console.error("Delete drive error:", error);
     res.status(500).json({
-      message: error.message,
+      message: "Unable to delete placement drive",
     });
   }
 };

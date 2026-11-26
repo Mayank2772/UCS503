@@ -398,12 +398,17 @@ export default function PlacementDrives() {
     if (!modal) return;
     setSaveError("");
 
-    const normalizedCompany = String(form.company || "").trim().toLowerCase();
-    const editingDriveId = modal.type === "edit" ? getDriveId(modal.drive) : null;
+    const normalizedCompany = String(form.company || "")
+      .trim()
+      .toLowerCase();
+    const editingDriveId =
+      modal.type === "edit" ? getDriveId(modal.drive) : null;
     const duplicateCompany = drives.some(
       (drive) =>
         getDriveId(drive) !== editingDriveId &&
-        String(drive.company || "").trim().toLowerCase() === normalizedCompany,
+        String(drive.company || "")
+          .trim()
+          .toLowerCase() === normalizedCompany,
     );
     if (duplicateCompany) {
       setSaveError("A placement drive for this company already exists.");
@@ -440,7 +445,9 @@ export default function PlacementDrives() {
       payload.cgpa < 0 ||
       payload.cgpa > 10
     ) {
-      setSaveError("Openings must be at least 1 and CGPA must be between 0 and 10.");
+      setSaveError(
+        "Openings must be at least 1 and CGPA must be between 0 and 10.",
+      );
       return;
     }
 
@@ -450,16 +457,9 @@ export default function PlacementDrives() {
         setDrives((prev) => [...prev, response.drive]);
       } else {
         const driveId = getDriveId(modal.drive);
-        const response = await updateDrive(
-          driveId,
-          payload,
-        );
+        const response = await updateDrive(driveId, payload);
         setDrives((prev) =>
-          prev.map((d) =>
-            getDriveId(d) === driveId
-              ? response.drive
-              : d,
-          ),
+          prev.map((d) => (getDriveId(d) === driveId ? response.drive : d)),
         );
       }
       closeModal();
@@ -486,11 +486,6 @@ export default function PlacementDrives() {
       label: "Active",
       value: drives.filter((d) => d.status === "Active").length,
       color: "#10b981",
-    },
-    {
-      label: "Closed",
-      value: drives.filter((d) => d.status === "Closed").length,
-      color: "#64748b",
     },
     {
       label: "Total Applied",
@@ -918,11 +913,7 @@ export default function PlacementDrives() {
         </Modal>
       )}
       {modal?.type === "delete" && modal.drive && (
-        <Modal
-          title="Confirm Delete"
-          error={saveError}
-          onClose={closeModal}
-        >
+        <Modal title="Confirm Delete" error={saveError} onClose={closeModal}>
           <DeleteConfirm
             drive={modal.drive}
             onConfirm={handleDelete}

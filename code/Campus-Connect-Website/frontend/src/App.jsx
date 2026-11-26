@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -35,6 +35,7 @@ function AppLayout({
   applyToDrive,
   hasApplied,
   drives,
+  dataErrors,
   newDrivesCount,
   onDrivesOpen,
 }) {
@@ -86,6 +87,15 @@ function AppLayout({
       />
       {/* Main content */}
       <main className="min-w-0 flex-1 overflow-auto">
+        {(dataErrors.drives || dataErrors.applications) && (
+          <div
+            className="mx-4 mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 sm:mx-6"
+            role="alert"
+          >
+            {dataErrors.drives && <p>{dataErrors.drives}</p>}
+            {dataErrors.applications && <p>{dataErrors.applications}</p>}
+          </div>
+        )}
         <Routes>
           {/* Dashboard */}
           <Route
@@ -186,56 +196,73 @@ function AppLayout({
     </div>
   );
 }
-function AuthenticatedApp() {
+function AuthenticatedApp({ onLogout }) {
   const [applications, setApplications] = useState([]);
   const [drives, setDrives] = useState([]);
+  const [driveError, setDriveError] = useState("");
+  const [applicationsError, setApplicationsError] = useState("");
   const [, setDrivesSeenVersion] = useState(0);
+  const [user, setUser] = useState(null);
+  const [profileError, setProfileError] = useState("");
 
   useEffect(() => {
+    if (!user) return;
+
     const loadData = () => {
       getDrives()
-        .then(setDrives)
-        .catch((error) => console.error("Drive fetch error:", error));
+        .then((data) => {
+          setDrives(data);
+          setDriveError("");
+        })
+        .catch((error) =>
+          setDriveError(error.message || "Unable to load placement drives."),
+        );
       getMyApplications()
-        .then(setApplications)
-        .catch((error) => console.error("Application fetch error:", error));
+        .then((data) => {
+          setApplications(data);
+          setApplicationsError("");
+        })
+        .catch((error) =>
+          setApplicationsError(
+            error.message || "Unable to load your applications.",
+          ),
+        );
     };
 
     loadData();
     const refreshTimer = window.setInterval(loadData, 30000);
     return () => window.clearInterval(refreshTimer);
-  }, []);
-
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
-
-    if (savedUser) {
-      try {
-        return JSON.parse(savedUser);
-      } catch {
-        console.error("Invalid user data in localStorage");
-      }
-    }
-
-    return null;
-  });
+  }, [user]);
 
   useEffect(() => {
     getStudentProfile()
       .then((student) => {
-        setUser((currentUser) => {
-          const updatedUser = {
-            ...student,
-            email: student.userId?.email || currentUser?.email,
-            name: student.userId?.name || currentUser?.name,
-            role: student.userId?.role || currentUser?.role,
-          };
-          localStorage.setItem("user", JSON.stringify(updatedUser));
-          return updatedUser;
-        });
+        if (!student) {
+          throw new Error("Student profile is unavailable");
+        }
+
+        const updatedUser = {
+          ...student,
+          email: student.userId?.email,
+          name: student.userId?.name,
+          role: student.userId?.role,
+        };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        setUser(updatedUser);
       })
-      .catch((error) => console.error("Profile fetch error:", error));
-  }, []);
+      .catch((error) => {
+        console.error("Profile fetch error:", error);
+
+        if ([401, 403, 404].includes(error.status)) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          onLogout();
+          return;
+        }
+
+        setProfileError("Unable to verify your account. Please refresh to try again.");
+      });
+  }, [onLogout]);
 
   const seenDrivesKey = `seen-drive-ids:${user?._id || user?.id || user?.email || "student"}`;
 
@@ -302,6 +329,22 @@ function AuthenticatedApp() {
     );
   };
 
+  if (profileError) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 p-6 text-center text-slate-700">
+        {profileError}
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 text-slate-600">
+        Checking your account...
+      </div>
+    );
+  }
+
   return (
     <AppLayout
       user={user}
@@ -310,6 +353,7 @@ function AuthenticatedApp() {
       applyToDrive={applyToDrive}
       hasApplied={hasApplied}
       drives={drives}
+      dataErrors={{ drives: driveError, applications: applicationsError }}
       newDrivesCount={newDrivesCount}
       onDrivesOpen={markDrivesSeen}
     />
@@ -320,11 +364,12 @@ export default function App() {
   const [loggedIn, setLoggedIn] = useState(
     localStorage.getItem("token") !== null,
   );
+  const handleLogout = useCallback(() => setLoggedIn(false), []);
+
   useEffect(() => {
-    const handleAuthExpired = () => setLoggedIn(false);
-    window.addEventListener("auth-expired", handleAuthExpired);
-    return () => window.removeEventListener("auth-expired", handleAuthExpired);
-  }, []);
+    window.addEventListener("auth-expired", handleLogout);
+    return () => window.removeEventListener("auth-expired", handleLogout);
+  }, [handleLogout]);
 
   return (
     <BrowserRouter>
@@ -354,7 +399,11 @@ export default function App() {
         <Route
           path="/*"
           element={
-            loggedIn ? <AuthenticatedApp /> : <Navigate to="/login" replace />
+            loggedIn ? (
+              <AuthenticatedApp onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
           }
         />
       </Routes>

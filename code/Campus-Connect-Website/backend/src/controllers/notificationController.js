@@ -8,7 +8,8 @@ const getMyNotifications = async (req, res) => {
 
     res.json(notifications);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Get notifications error:", error);
+    res.status(500).json({ message: "Unable to load notifications" });
   }
 };
 
@@ -26,7 +27,8 @@ const markNotificationRead = async (req, res) => {
 
     res.json(notification);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Mark notification read error:", error);
+    res.status(500).json({ message: "Unable to update notification" });
   }
 };
 
@@ -38,7 +40,8 @@ const markAllNotificationsRead = async (req, res) => {
     );
     res.json({ message: "Notifications marked as read" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Mark all notifications read error:", error);
+    res.status(500).json({ message: "Unable to update notifications" });
   }
 };
 
@@ -55,7 +58,8 @@ const deleteNotification = async (req, res) => {
 
     res.json({ message: "Notification deleted" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Delete notification error:", error);
+    res.status(500).json({ message: "Unable to delete notification" });
   }
 };
 

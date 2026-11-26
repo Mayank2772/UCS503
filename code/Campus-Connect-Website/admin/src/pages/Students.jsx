@@ -107,7 +107,7 @@ function Modal({ title, onClose, children }) {
 function StudentForm({ initial, onSave, onCancel }) {
   const [form, setForm] = useState({ ...initial });
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
-  const field = (label, key, type = "text", placeholder = "") => (
+  const field = (label, key, type = "text", placeholder = "", readOnly = false) => (
     <div>
       <label
         className="block text-xs font-semibold mb-1.5"
@@ -120,7 +120,10 @@ function StudentForm({ initial, onSave, onCancel }) {
         value={form[key]}
         onChange={(e) => set(key, e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-xl px-3.5 py-2.5 text-sm border outline-none"
+        readOnly={readOnly}
+        className={`w-full rounded-xl px-3.5 py-2.5 text-sm border outline-none ${
+          readOnly ? "bg-slate-50 cursor-default" : ""
+        }`}
         style={{ borderColor: "#e2e8f0", color: "#0f172a" }}
         onFocus={(e) => (e.target.style.borderColor = "#4f7ef7")}
         onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
@@ -161,9 +164,9 @@ function StudentForm({ initial, onSave, onCancel }) {
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {field("Phone", "phone", "text", "+91 XXXXX XXXXX")}
-        {field("Email", "email", "email", "student@nitr.ac.in")}
+        {field("Email (read-only)", "email", "email", "", true)}
       </div>
-      <div className="flex gap-6">
+      <div className="flex flex-wrap gap-6">
         <label className="flex items-center gap-2 cursor-pointer">
           <input
             type="checkbox"
@@ -174,23 +177,20 @@ function StudentForm({ initial, onSave, onCancel }) {
             Has Active Backlog
           </span>
         </label>
-        <label className="flex items-center gap-2 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={form.placed}
-            onChange={(e) => set("placed", e.target.checked)}
-          />
-          <span className="text-xs font-semibold" style={{ color: "#475569" }}>
-            Placed
-          </span>
-        </label>
       </div>
-      {form.placed && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {field("Company", "company", "text", "e.g. Google")}
-          {field("CTC", "ctc", "text", "e.g. ₹32 LPA")}
-        </div>
-      )}
+      <div className="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3">
+        <p className="text-xs font-semibold text-slate-600">
+          Placement status: {form.placed ? "Placed" : "Not placed"}
+        </p>
+        {form.placed && (
+          <p className="mt-1 text-xs text-slate-500">
+            {[form.company, form.ctc].filter(Boolean).join(" · ")}
+          </p>
+        )}
+        <p className="mt-1 text-[11px] text-slate-400">
+          Based on application offers; update this in Applications.
+        </p>
+      </div>
       <div className="flex gap-3 pt-1">
         <button
           onClick={onCancel}
@@ -214,6 +214,7 @@ function StudentForm({ initial, onSave, onCancel }) {
 export default function Students() {
   const [students, setStudents] = useState([]);
   const [loadError, setLoadError] = useState("");
+  const [placementError, setPlacementError] = useState("");
   const [search, setSearch] = useState("");
   const [modal, setModal] = useState(null);
 
@@ -250,9 +251,13 @@ export default function Students() {
               })(),
             ),
           );
+          setPlacementError("");
         })
         .catch((error) => {
           console.warn("Unable to load placement data:", error.message);
+          setPlacementError(
+            error.message || "Unable to load student placement data.",
+          );
         });
     };
 
@@ -351,6 +356,11 @@ export default function Students() {
           </p>
           {loadError && (
             <p className="mt-2 text-xs font-medium text-red-600">{loadError}</p>
+          )}
+          {placementError && (
+            <p className="mt-2 text-xs font-medium text-red-600" role="alert">
+              {placementError}
+            </p>
           )}
         </div>
       </div>

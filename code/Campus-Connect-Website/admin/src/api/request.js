@@ -1,17 +1,22 @@
 export async function request(
   url,
   options = {},
-  fallbackMessage = "Request failed",
+  fallbackMessage = "Unable to connect to the server. Please try again.",
   parseJson = true,
 ) {
   const token = localStorage.getItem("token");
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    },
-  });
+  let response;
+  try {
+    response = await fetch(url, {
+      ...options,
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options.headers,
+      },
+    });
+  } catch (error) {
+    throw new Error(fallbackMessage, { cause: error });
+  }
 
   if (response.status === 401) {
     localStorage.removeItem("token");
@@ -19,9 +24,22 @@ export async function request(
     window.dispatchEvent(new Event("auth-expired"));
   }
 
+  let data = {};
+  if (parseJson) {
+    try {
+      data = await response.json();
+    } catch (error) {
+      if (response.ok) {
+        throw new Error("The server returned an invalid response. Please try again.", {
+          cause: error,
+        });
+      }
+    }
+  }
+
   return {
     response,
-    data: parseJson ? await response.json().catch(() => ({})) : {},
+    data,
     fallbackMessage,
   };
 }

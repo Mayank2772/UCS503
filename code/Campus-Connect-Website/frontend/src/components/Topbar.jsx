@@ -23,6 +23,7 @@ function timeAgo(value) {
 export default function Topbar({ title, onNav }) {
   const [showNotifDrop, setShowNotifDrop] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [notificationError, setNotificationError] = useState("");
   const notificationRef = useRef(null);
   const [user] = useState(() => {
     try {
@@ -45,8 +46,15 @@ export default function Topbar({ title, onNav }) {
   useEffect(() => {
     const loadNotifications = () => {
       getNotifications()
-        .then(setNotifications)
-        .catch((error) => console.error("Notification fetch error:", error));
+        .then((data) => {
+          setNotifications(data);
+          setNotificationError("");
+        })
+        .catch((error) =>
+          setNotificationError(
+            error.message || "Unable to load notifications. Please try again.",
+          ),
+        );
     };
 
     loadNotifications();
@@ -76,8 +84,12 @@ export default function Topbar({ title, onNav }) {
       setNotifications((current) =>
         current.map((item) => (item._id === updated._id ? updated : item)),
       );
+      setNotificationError("");
     } catch (error) {
       console.error("Mark notification read error:", error);
+      setNotificationError(
+        error.message || "Unable to mark the notification as read.",
+      );
     }
   };
 
@@ -87,8 +99,12 @@ export default function Topbar({ title, onNav }) {
       setNotifications((current) =>
         current.map((notification) => ({ ...notification, isRead: true })),
       );
+      setNotificationError("");
     } catch (error) {
       console.error("Mark all notifications read error:", error);
+      setNotificationError(
+        error.message || "Unable to mark notifications as read.",
+      );
     }
   };
 
@@ -98,8 +114,10 @@ export default function Topbar({ title, onNav }) {
       setNotifications((current) =>
         current.filter((notification) => notification._id !== notificationId),
       );
+      setNotificationError("");
     } catch (error) {
       console.error("Delete notification error:", error);
+      setNotificationError(error.message || "Unable to delete notification.");
     }
   };
 
@@ -221,9 +239,14 @@ export default function Topbar({ title, onNav }) {
                   Mark all read
                 </button>
               </div>
+              {notificationError && (
+                <p className="px-4 py-2 text-xs text-red-700" role="alert">
+                  {notificationError}
+                </p>
+              )}
               {notifications.length === 0 ? (
                 <div className="px-4 py-8 text-center text-sm text-slate-400">
-                  No notifications yet.
+                  {notificationError ? "Notifications are unavailable." : "No notifications yet."}
                 </div>
               ) : (
                 notifications.map((notification, i) => (

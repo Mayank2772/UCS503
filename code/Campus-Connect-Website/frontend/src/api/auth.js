@@ -2,94 +2,48 @@ import { API_BASE_URL } from "./config";
 import { request as apiRequest } from "./request";
 const API_URL = `${API_BASE_URL}/auth`;
 
-export async function register(data) {
-  const response = await fetch(`${API_URL}/register`, {
+async function post(path, payload, fallbackMessage) {
+  const { response, data } = await apiRequest(
+    `${API_URL}${path}`,
+    {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
-  });
-
-  const result = await response.json();
-
-  if (!response.ok) {
-    throw new Error(result.message || "Registration failed");
-  }
-
-  return result;
+      body: JSON.stringify(payload),
+    },
+    fallbackMessage,
+  );
+  if (!response.ok) throw new Error(data.message || fallbackMessage);
+  return data;
 }
 
-export async function requestRegistrationOtp(data) {
-  const response = await fetch(`${API_URL}/register/request-otp`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  const result = await response.json();
-
-  if (!response.ok) {
-    throw new Error(result.message || "Unable to send verification code");
-  }
-
-  return result;
+export function register(data) {
+  return post("/register", data, "Registration failed");
 }
 
-export async function login(data) {
-  const response = await fetch(`${API_URL}/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  const result = await response.json();
-
-  if (!response.ok) {
-    throw new Error(result.message || "Login failed");
-  }
-
-  return result;
+export function requestRegistrationOtp(data) {
+  return post(
+    "/register/request-otp",
+    data,
+    "Unable to send verification code",
+  );
 }
 
-export async function requestPasswordResetOtp(data) {
-  const response = await fetch(`${API_URL}/forgot-password/request-otp`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  const result = await response.json();
-
-  if (!response.ok) {
-    throw new Error(result.message || "Unable to send reset code");
-  }
-
-  return result;
+export function login(data) {
+  return post("/login", data, "Login failed");
 }
 
-export async function resetPassword(data) {
-  const response = await fetch(`${API_URL}/forgot-password/reset`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+export function requestPasswordResetOtp(data) {
+  return post(
+    "/forgot-password/request-otp",
+    data,
+    "Unable to send reset code",
+  );
+}
 
-  const result = await response.json();
-
-  if (!response.ok) {
-    throw new Error(result.message || "Unable to reset password");
-  }
-
-  return result;
+export function resetPassword(data) {
+  return post("/forgot-password/reset", data, "Unable to reset password");
 }
 
 export async function changePassword(data) {

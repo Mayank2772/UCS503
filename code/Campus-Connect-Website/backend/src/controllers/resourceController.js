@@ -8,7 +8,8 @@ const getResources = async (req, res) => {
 
     res.json(resources);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Get resources error:", error);
+    res.status(500).json({ message: "Unable to load resources" });
   }
 };
 
@@ -52,7 +53,8 @@ const createResource = async (req, res) => {
       });
     }
 
-    res.status(500).json({ message: error.message });
+    console.error("Create resource error:", error);
+    res.status(500).json({ message: "Unable to create resource" });
   }
 };
 
@@ -86,7 +88,8 @@ const downloadResource = async (req, res) => {
     });
     res.send(resource.data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Download resource error:", error);
+    res.status(500).json({ message: "Unable to access resource file" });
   }
 };
 
@@ -100,7 +103,8 @@ const deleteResource = async (req, res) => {
 
     res.json({ message: "Resource deleted" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Delete resource error:", error);
+    res.status(500).json({ message: "Unable to delete resource" });
   }
 };
 
