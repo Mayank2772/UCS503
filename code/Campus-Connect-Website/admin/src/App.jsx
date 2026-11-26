@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 import Dashboard from "./pages/Dashboard";
 import PlacementDrives from "./pages/PlacementDrives";
@@ -95,8 +96,9 @@ export default function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <Routes>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Routes>
         <Route path="/team" element={<TeamPage />} />
         <Route
           path="*"
@@ -108,7 +110,8 @@ export default function App() {
             )
           }
         />
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }

@@ -13,6 +13,8 @@ async function post(path, payload, fallbackMessage) {
       body: JSON.stringify(payload),
     },
     fallbackMessage,
+    true,
+    false,
   );
   if (!response.ok) throw new Error(data.message || fallbackMessage);
   return data;

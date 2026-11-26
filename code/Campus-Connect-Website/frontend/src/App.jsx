@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { getStudentProfile, updateStudentProfile } from "./api/student";
 import { getDrives } from "./api/drives";
+import ErrorBoundary from "./components/ErrorBoundary";
 import {
   applyToDrive as submitApplication,
   getMyApplications,
@@ -372,8 +373,9 @@ export default function App() {
   }, [handleLogout]);
 
   return (
-    <BrowserRouter>
-      <Routes>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Routes>
         {/* Public routes */}
         <Route
           path="/login"
@@ -406,7 +408,8 @@ export default function App() {
             )
           }
         />
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }

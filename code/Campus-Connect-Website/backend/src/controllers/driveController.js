@@ -50,7 +50,7 @@ const createDrive = async (req, res) => {
                 field: validationError.path,
                 message: validationError.message,
               }))
-            : [{ field: error.path, message: error.message }],
+            : [{ field: error.path, message: "Invalid value" }],
       });
     }
 
@@ -181,7 +181,7 @@ const updateDrive = async (req, res) => {
                 field: validationError.path,
                 message: validationError.message,
               }))
-            : [{ field: error.path, message: error.message }],
+            : [{ field: error.path, message: "Invalid value" }],
       });
     }
 

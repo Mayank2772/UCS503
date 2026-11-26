@@ -3,8 +3,9 @@ export async function request(
   options = {},
   fallbackMessage = "Unable to connect to the server. Please try again.",
   parseJson = true,
+  includeAuth = true,
 ) {
-  const token = localStorage.getItem("token");
+  const token = includeAuth ? localStorage.getItem("token") : null;
   let response;
   try {
     response = await fetch(url, {
@@ -18,7 +19,7 @@ export async function request(
     throw new Error(fallbackMessage, { cause: error });
   }
 
-  if (response.status === 401) {
+  if (includeAuth && response.status === 401) {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.dispatchEvent(new Event("auth-expired"));

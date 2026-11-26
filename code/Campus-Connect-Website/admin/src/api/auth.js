@@ -11,6 +11,8 @@ export async function login(payload) {
       body: JSON.stringify(payload),
     },
     "Login failed",
+    true,
+    false,
   );
   if (!response.ok) throw new Error(data.message || "Login failed");
   return data;

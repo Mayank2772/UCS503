@@ -30,6 +30,72 @@ function welcomeEmailHtml({ firstName, lastName }) {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Welcome to CampusConnect</title>
+        <style>
+          @media only screen and (max-width:600px) {
+            .email-shell {
+              padding:20px 10px !important;
+            }
+            .email-card {
+              border-radius:16px !important;
+            }
+            .email-header,
+            .email-content,
+            .email-footer {
+              padding-left:20px !important;
+              padding-right:20px !important;
+            }
+            .email-header {
+              padding-top:20px !important;
+              padding-bottom:20px !important;
+            }
+            .header-brand,
+            .header-badge {
+              display:block !important;
+              width:auto !important;
+              text-align:left !important;
+            }
+            .header-badge {
+              padding-top:14px !important;
+            }
+            .email-hero {
+              padding:32px 22px !important;
+            }
+            .welcome-title {
+              font-size:29px !important;
+              line-height:1.2 !important;
+              letter-spacing:-0.4px !important;
+              overflow-wrap:anywhere;
+            }
+            .email-content {
+              padding-top:28px !important;
+              padding-bottom:28px !important;
+            }
+            .feature-card {
+              padding:14px !important;
+            }
+            .feature-icon {
+              width:36px !important;
+              height:36px !important;
+              font-size:17px !important;
+            }
+            .feature-copy {
+              padding-left:10px !important;
+            }
+            .welcome-cta {
+              display:block !important;
+              box-sizing:border-box !important;
+              width:100% !important;
+              padding:14px 12px !important;
+            }
+            .quick-start {
+              padding:16px !important;
+            }
+            .email-footer {
+              padding-top:22px !important;
+              padding-bottom:22px !important;
+            }
+          }
+        </style>
       </head>
 
       <body
@@ -51,10 +117,11 @@ function welcomeEmailHtml({ firstName, lastName }) {
           style="background:#f1f5f9;"
         >
           <tr>
-            <td align="center" style="padding:40px 16px;">
+            <td class="email-shell" align="center" style="padding:40px 16px;">
 
               <!-- Email Container -->
               <table
+                class="email-card"
                 width="100%"
                 cellpadding="0"
                 cellspacing="0"
@@ -71,6 +138,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                 <!-- ================= HEADER ================= -->
                 <tr>
                   <td
+                    class="email-header"
                     style="
                       padding:28px 40px;
                       background:#ffffff;
@@ -87,7 +155,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                       <tr>
 
                         <!-- Logo -->
-                        <td>
+                        <td class="header-brand">
                           <table cellpadding="0" cellspacing="0" border="0">
                             <tr>
 
@@ -134,7 +202,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                         </td>
 
                         <!-- Badge -->
-                        <td align="right">
+                        <td class="header-badge" align="right">
                           <span
                             style="
                               display:inline-block;
@@ -160,6 +228,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                 <!-- ================= HERO ================= -->
                 <tr>
                   <td
+                    class="email-hero"
                     style="
                       padding:48px 40px 42px;
                       background:linear-gradient(
@@ -188,6 +257,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                     </div>
 
                     <h1
+                      class="welcome-title"
                       style="
                         margin:22px 0 12px;
                         color:#ffffff;
@@ -220,7 +290,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
 
                 <!-- ================= CONTENT ================= -->
                 <tr>
-                  <td style="padding:40px;">
+                  <td class="email-content" style="padding:40px;">
 
                     <p
                       style="
@@ -259,6 +329,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                       <!-- Feature 1 -->
                       <tr>
                         <td
+                          class="feature-card"
                           style="
                             padding:18px;
                             background:#f8fafc;
@@ -275,6 +346,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                             <tr>
 
                               <td
+                                class="feature-icon"
                                 style="
                                   width:42px;
                                   height:42px;
@@ -288,7 +360,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                                 🎯
                               </td>
 
-                              <td style="padding-left:14px;">
+                              <td class="feature-copy" style="padding-left:14px;">
                                 <div
                                   style="
                                     font-size:14px;
@@ -324,6 +396,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                       <!-- Feature 2 -->
                       <tr>
                         <td
+                          class="feature-card"
                           style="
                             padding:18px;
                             background:#f8fafc;
@@ -340,6 +413,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                             <tr>
 
                               <td
+                                class="feature-icon"
                                 style="
                                   width:42px;
                                   height:42px;
@@ -353,7 +427,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                                 📋
                               </td>
 
-                              <td style="padding-left:14px;">
+                              <td class="feature-copy" style="padding-left:14px;">
                                 <div
                                   style="
                                     font-size:14px;
@@ -389,6 +463,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                       <!-- Feature 3 -->
                       <tr>
                         <td
+                          class="feature-card"
                           style="
                             padding:18px;
                             background:#f8fafc;
@@ -405,6 +480,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                             <tr>
 
                               <td
+                                class="feature-icon"
                                 style="
                                   width:42px;
                                   height:42px;
@@ -418,7 +494,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                                 🔔
                               </td>
 
-                              <td style="padding-left:14px;">
+                              <td class="feature-copy" style="padding-left:14px;">
                                 <div
                                   style="
                                     font-size:14px;
@@ -462,6 +538,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                         <td align="center">
 
                           <a
+                            class="welcome-cta"
                             href="${frontendUrl}/login"
                             style="
                               display:inline-block;
@@ -485,6 +562,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
 
                     <!-- Quick Start -->
                     <div
+                      class="quick-start"
                       style="
                         margin-top:32px;
                         padding:20px;
@@ -526,6 +604,7 @@ function welcomeEmailHtml({ firstName, lastName }) {
                 <!-- ================= FOOTER ================= -->
                 <tr>
                   <td
+                    class="email-footer"
                     style="
                       padding:28px 40px;
                       background:#f8fafc;
